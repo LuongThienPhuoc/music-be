@@ -11,5 +11,5 @@ const TemptUserSchema = new Schema(
 )
 
 const TemptUser = mongoose.model("temptUser", TemptUserSchema)
-TemptUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 })
+TemptUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 120 })
 module.exports = TemptUser
