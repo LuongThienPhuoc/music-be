@@ -11,7 +11,12 @@ const PORT = process.env.PORT || 5050
 
 app.use(bodyParser.json({ limit: 10000 }))
 app.use(bodyParser.urlencoded({ extended: true, limit: 10000 }))
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }))
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://localhost:3000", "https://p2tune.netlify.app/", "*"]
+  })
+)
 app.use(cookieParser())
 app.use(express.static("public"))
 connectDB()
