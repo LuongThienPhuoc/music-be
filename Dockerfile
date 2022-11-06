@@ -1,5 +1,5 @@
 FROM node:16
-s
+
 WORKDIR /app
 
 COPY ./package.json ./
