@@ -1,14 +1,28 @@
 const checkValidEmail = require("../helper/emailValid")
-const sendMail = require("../helper/sendMail")
-const crypto = require("crypto")
 const TemptUser = require("../models/temptUser.js")
 const User = require("../models/users.js")
 const bcrypt = require("bcrypt")
 const { JWTAuthToken } = require("../middleware/JWT")
-
+// const ZingMP3 = require("zingmp3-api")
+const { ZingMp3 } = require("zingmp3-api-full")
 const SALT_ROUND = 10
 
 class userController {
+
+  test = async (req, res) => {
+    const song = await ZingMp3.getSong("IWZAEC86")
+    const sontung = await ZingMp3.getArtist("sontungmtp")
+    res.status(200).json({
+      song,
+      sontung
+    })
+  }
+
+  top10 = async (req, res) => {
+    const top10 = await ZingMp3.getTop100()
+    res.status(200).json(top10)
+  }
+
   signUp = (req, res) => {
     const { username, email, name, password } = req.body
     User.create({
