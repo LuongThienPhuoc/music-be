@@ -3,6 +3,8 @@ const router = express.Router()
 const userController = require("../controllers/userController")
 const { AuthMiddleware } = require("../middleware/JWT")
 
+router.get("/top10", userController.top10)
+router.get("/test", userController.test)
 router.post("/request-otp", userController.requestOTP)
 router.post("/sign-up", userController.signUp)
 router.post("/verify-otp", userController.verifyOTP)
