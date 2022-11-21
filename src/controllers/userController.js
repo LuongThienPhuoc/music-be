@@ -8,14 +8,15 @@ const { ZingMp3 } = require("zingmp3-api-full")
 const SALT_ROUND = 10
 
 class userController {
-
   test = async (req, res) => {
-    const song = await ZingMp3.getSong("IWZAEC86")
-    const sontung = await ZingMp3.getArtist("sontungmtp")
-    res.status(200).json({
-      song,
-      sontung
-    })
+    // const song = await ZingMp3.getSong("IWZAEC86")
+    // const sontung = await ZingMp3.getArtist("sontungmtp")
+    // res.status(200).json({
+    //   song,
+    //   sontung
+    // })
+    const data = await ZingMp3.getChartHome()
+    res.status(200).send({ success: true, data: data })
   }
 
   top10 = async (req, res) => {
