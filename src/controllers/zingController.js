@@ -60,28 +60,28 @@ class zingController {
       (val) => val.sectionType === "new-release"
     )
     const listSong = itemMain[0].items.all
-    // console.log(listSong.length)
-    // const getSongDetail = async (songIDs) => {
-    //   let songDetail
-    //   for (let i = 0; i < songIDs.length; i++) {
-    //     songDetail = await ZingMp3.getSong(songIDs[i])
-    //     if (songDetail.err == 0) {
-    //       break
-    //     }
-    //   }
-    //   return songDetail
-    // }
-    // let newList = []
-    // for (let i = 0; i < listSong.length; i++) {
-    //   let songConcrete = await getSongDetail(listSong[i].genreIds)
-    //   console.log("songConcrete", songConcrete)
-    //   if (songConcrete.err == 0) {
-    //     newList.push({ ...listSong[i], url: songConcrete.data[128] })
-    //   }
-    // }
-    res.status(200).send({ success: true, data: listSong })
-  }
 
+
+    const getSongDetail = async (songIDs) => {
+      let songDetail
+      for (let i = 0; i < songIDs.length; i++) {
+        songDetail = await ZingMp3.getSong(songIDs[i])
+        if (songDetail.err == 0) {
+          break
+        }
+      }
+      return songDetail
+    }
+    let newList = []
+    for (let i = 0; i < listSong.length; i++) {
+      let songConcrete = await getSongDetail(listSong[i].genreIds)
+      console.log("songConcrete", songConcrete)
+      if (songConcrete.err == 0) {
+        newList.push({ ...listSong[i], url: songConcrete.data[128] })
+      }
+    }
+    res.status(200).send({ success: true, data: newList })
+  }
 }
 
 module.exports = new zingController()
