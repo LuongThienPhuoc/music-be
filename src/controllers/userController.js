@@ -168,11 +168,12 @@ class userController {
   login = (req, res) => {
     const { username, password } = req.body
     const signJWT = JWTAuthToken(username)
-    const successFunction = (message) => {
+    const successFunction = (message, data) => {
       res.status(200).send({
         success: true,
         jwt: signJWT,
-        message: message
+        message: message,
+        data
       })
       return
     }
@@ -193,7 +194,7 @@ class userController {
           } else if (!bcrypt.compareSync(password, data.password)) {
             errorFuncion("Password incorrect")
           } else {
-            successFunction("Login successfully")
+            successFunction("Login successfully", data)
           }
         })
         .catch((err) => {
@@ -204,12 +205,14 @@ class userController {
     findUser(username, password)
   }
 
-  refresh = (req, res) => {
+  refresh = async (req, res) => {
     const username = res.locals.data[0]
+    const data = await User.findOne({ username })
     res.status(200).send({
       success: true,
       message: "Refresh successfully",
-      username
+      username,
+      data
     })
   }
 }
