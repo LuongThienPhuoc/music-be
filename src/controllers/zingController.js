@@ -1,15 +1,43 @@
 const { ZingMp3 } = require("zingmp3-api-full")
 
 class zingController {
+  getSingerById = async (req, res) => {
+    const { id } = req.query
+    ZingMp3.getArtist(id).then((data) => {
+      res.status(200).json(data)
+    })
+      .catch(err => {
+        res.status(400).json({ err: err.message })
+      })
+
+  }
+
   getTop100 = async (req, res) => {
     const data = await ZingMp3.getChartHome()
     res.status(200).send({ success: true, data: data })
+  }
+
+  getSongById = async (req, res) => {
+    try {
+      const { id } = req.query
+      const lyric = await ZingMp3.getLyric(id)
+      const detail = await ZingMp3.getInfoSong(id)
+      res.status(200).json({
+        lyric,
+        detail
+      })
+    } catch (err) {
+      res.status(400).json({ err: err.message })
+    }
+
+
   }
 
   getDetailSong = async (req, res) => {
     const { idSong } = req.query
     const detail = await ZingMp3.getSong(idSong)
     const lyric = await ZingMp3.getLyric(idSong)
+
     res.status(200).json({ detail, lyric })
   }
 
@@ -34,6 +62,7 @@ class zingController {
 
   getConcreteLyric = async (req, res) => {
     const data = await ZingMp3.getSong("IWZ97FCD")
+
     res.status(200).send({ success: true, data: data })
   }
 

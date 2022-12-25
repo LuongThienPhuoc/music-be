@@ -39,6 +39,27 @@ class playlistController {
       playlists: result
     })
   }
+
+  async updatePlaylist(req, res) {
+    try {
+      const { songs, username, playlistId } = req.body
+      const result = await Playlist.findOneAndUpdate({
+        _id: playlistId,
+        username
+      }, {
+        songs
+      })
+      res.status(200).json({
+        message: "Update thành công",
+        playlists: result
+      })
+    } catch (err) {
+      res.status(400).json({
+        err: err.message
+      })
+    }
+
+  }
 }
 
 module.exports = new playlistController()
