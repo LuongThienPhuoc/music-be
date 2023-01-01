@@ -1,5 +1,20 @@
 const Playlist = require("../models/playlist")
+const { ZingMp3 } = require("zingmp3-api-full")
+
 class playlistController {
+  async getDetailPlaylist(req, res) {
+    const { id } = req.params
+    ZingMp3.getDetailPlaylist(id)
+      .then((data) => {
+        res.status(200).json(data)
+      })
+      .catch(err => {
+        res.status(400).json({
+          message: err.message
+        })
+      })
+  }
+
   async deletePlaylist(req, res) {
     const { username, playlistName } = req.body
     Playlist.findOneAndDelete({ username, playlistName })
