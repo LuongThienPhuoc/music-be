@@ -1,15 +1,21 @@
 const { ZingMp3 } = require("zingmp3-api-full")
+const { zing } = require("zingmp3-api-next")
 
 class zingController {
+  getRadio = async (req, res) => {
+    let data = await zing.get_radio()
+    return res.json(data)
+  }
+
   getSingerById = async (req, res) => {
     const { id } = req.query
-    ZingMp3.getArtist(id).then((data) => {
-      res.status(200).json(data)
-    })
-      .catch(err => {
+    ZingMp3.getArtist(id)
+      .then((data) => {
+        res.status(200).json(data)
+      })
+      .catch((err) => {
         res.status(400).json({ err: err.message })
       })
-
   }
 
   getTop100 = async (req, res) => {
@@ -29,8 +35,6 @@ class zingController {
     } catch (err) {
       res.status(400).json({ err: err.message })
     }
-
-
   }
 
   getDetailSong = async (req, res) => {
@@ -90,8 +94,6 @@ class zingController {
       (val) => val.sectionType === "new-release"
     )
     const listSong = itemMain[0].items.all
-
-
 
     res.status(200).send({ success: true, data: listSong, home })
   }

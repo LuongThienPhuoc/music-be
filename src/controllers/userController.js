@@ -24,15 +24,31 @@ class userController {
     res.status(200).json(top10)
   }
 
-  signUp = (req, res) => {
+  signUp = async (req, res) => {
     const { username, email, name, password } = req.body
+    // Check valid username and email
+    const userExist = await User.findOne({
+      $or: [{ username: username }, { email: email }]
+    })
+    if (userExist) {
+      let errorMessage = ""
+      if (userExist.username === username) {
+        errorMessage = `Username: ${username} has been used, please choose another username`
+      } else {
+        errorMessage = `Email ${email} has been used, please choose another email`
+      }
+      res.status(200).send({ success: false, errorMessage: errorMessage })
+      return
+    }
     User.create({
       username: username,
       password: bcrypt.hashSync(password, SALT_ROUND),
       email: email,
       fullName: name
     })
-    res.status(200).send({ username, email, name, password })
+    res
+      .status(200)
+      .send({ success: true, info: { username, email, name, password } })
   }
 
   requestOTP = (req, res) => {
@@ -208,6 +224,11 @@ class userController {
   refresh = async (req, res) => {
     const username = res.locals.data[0]
     const data = await User.findOne({ username })
+    if (data === null) {
+      res.status(200).send({
+        success: false
+      })
+    }
     res.status(200).send({
       success: true,
       message: "Refresh successfully",

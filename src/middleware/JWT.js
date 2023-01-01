@@ -38,11 +38,15 @@ async function AuthMiddleware(req, res, next) {
     const token = req.cookies.jwt
     // console.log("token", token)
     if (!token) {
-      res.status(401).send(JSON.stringify({ status: 401 }))
+      res.status(200).send({
+        success: false
+      })
     } else {
       jwt.verify(token, KEY_JWT, (err, data) => {
         if (err) {
-          respone_401(res, err)
+          res.status(200).send({
+            success: false
+          })
         } else {
           res.locals.data = data
           next()
@@ -50,7 +54,9 @@ async function AuthMiddleware(req, res, next) {
       })
     }
   } catch (err) {
-    respone_401(res, err)
+    res.status(200).send({
+      success: false
+    })
   }
 }
 

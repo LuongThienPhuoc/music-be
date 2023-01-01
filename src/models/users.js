@@ -3,11 +3,15 @@ const Schema = mongoose.Schema
 
 const UserSchema = new Schema(
   {
-    username: { type: String },
+    username: { type: String, unique: true },
     password: { type: String },
-    email: { type: String },
+    email: { type: String, unique: true },
     fullName: { type: String },
-    verify: { type: Boolean, default: false }
+    verify: { type: Boolean, default: false },
+    avatarUrl: {
+      type: String,
+      default: "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+    }
   },
   { timestamps: true }
 )

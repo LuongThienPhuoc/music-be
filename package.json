@@ -27,6 +27,7 @@
     "nodemon": "^2.0.19",
     "os": "^0.1.2",
     "zingmp3-api": "^1.0.10",
-    "zingmp3-api-full": "^1.0.14"
+    "zingmp3-api-full": "^1.0.14",
+    "zingmp3-api-next": "^1.0.4"
   }
 }
