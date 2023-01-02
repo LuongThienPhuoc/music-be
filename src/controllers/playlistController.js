@@ -57,41 +57,83 @@ class playlistController {
   }
 
   async addSong(req, res) {
-    const { songs, username, playlistName } = req.body
-    const result = await Playlist.findOneAndUpdate(
-      {
-        username,
-        playlistName
-      },
-      {
-        songs
-      }
-    )
-    res.status(200).json({
-      message: "Lấy toàn bộ thành công",
-      playlists: result
-    })
+    try {
+      const { songs, username, playlistName } = req.body
+      const result = await Playlist.findOneAndUpdate(
+        {
+          username,
+          playlistName
+        },
+        {
+          songs
+        }
+      )
+      res.status(200).json({
+        message: "Lấy toàn bộ thành công",
+        playlists: result
+      })
+    } catch (err) {
+      res.status(400).json({
+        message: "Thêm thất bại",
+        playlists: err.message
+      })
+    }
+
   }
 
   async updatePlaylist(req, res) {
     try {
       const { songs, username, playlistId } = req.body
-      const result = await Playlist.findOneAndUpdate({
-        _id: playlistId,
-        username
-      }, {
+      Playlist.findByIdAndUpdate(
+        {
+          _id: playlistId,
+        }, {
         songs
-      })
-      res.status(200).json({
-        message: "Update thành công",
-        playlists: result
+      }
+      ).then(result => {
+        res.status(200).json({
+          message: "Update thành công",
+          playlists: result
+        })
+      }).catch(err => {
+        res.status(400).json({
+          err: err.message
+        })
       })
     } catch (err) {
       res.status(400).json({
         err: err.message
       })
     }
+  }
 
+  async updateNamePlaylist(req, res) {
+    try {
+      const { id, playlistName, username } = req.body
+      const currentPlaylist = await Playlist.findById(id)
+      const idCheck = await Playlist.findOne({ playlistName, username })
+      if (idCheck && currentPlaylist.playlistName !== idCheck.playlistName) {
+        res.status(400).json({
+          message: "Tên tồn tại"
+        })
+      } else {
+        Playlist.findByIdAndUpdate(id, {
+          playlistName
+        }).then(result => {
+          res.status(200).json({
+            message: "Đổi tên thành công"
+          })
+        }).catch(err => {
+          res.status(400).json({
+            message: err.message
+          })
+        })
+      }
+    } catch (err) {
+      res.status(400).json({
+        message: err.message
+      })
+    }
   }
 }
 
