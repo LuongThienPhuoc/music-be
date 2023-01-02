@@ -228,13 +228,13 @@ class userController {
       res.status(200).send({
         success: false
       })
-    }
-    res.status(200).send({
-      success: true,
-      message: "Refresh successfully",
-      username,
-      data
-    })
+    } else
+      res.status(200).send({
+        success: true,
+        message: "Refresh successfully",
+        username,
+        data
+      })
   }
 }
 

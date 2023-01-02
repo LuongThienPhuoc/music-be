@@ -3,10 +3,10 @@ class playlistController {
   async deletePlaylist(req, res) {
     const { username, playlistName } = req.body
     Playlist.findOneAndDelete({ username, playlistName })
-      .then(result => {
+      .then((result) => {
         res.status(200).json({ message: "Delete success" })
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).json({ message: "Delete failed" })
       })
   }
@@ -16,7 +16,7 @@ class playlistController {
     const isCheck = await Playlist.findOne({ username, playlistName })
     if (isCheck) {
       res.status(400).json({
-        message: "Playlist already exist",
+        message: "Playlist already exist"
       })
     } else {
       const playlist = new Playlist({
@@ -29,7 +29,6 @@ class playlistController {
         playlist
       })
     }
-
   }
 
   async getAllPlaylist(req, res) {
@@ -61,12 +60,15 @@ class playlistController {
   async updatePlaylist(req, res) {
     try {
       const { songs, username, playlistId } = req.body
-      const result = await Playlist.findOneAndUpdate({
-        _id: playlistId,
-        username
-      }, {
-        songs
-      })
+      const result = await Playlist.findOneAndUpdate(
+        {
+          _id: playlistId,
+          username
+        },
+        {
+          songs
+        }
+      )
       res.status(200).json({
         message: "Update thành công",
         playlists: result
@@ -76,7 +78,6 @@ class playlistController {
         err: err.message
       })
     }
-
   }
 }
 

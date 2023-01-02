@@ -4,7 +4,7 @@ const { zing } = require("zingmp3-api-next")
 class zingController {
   getRadio = async (req, res) => {
     let data = await zing.get_radio()
-    return res.json(data)
+    return res.status.send(data)
   }
 
   getSingerById = async (req, res) => {

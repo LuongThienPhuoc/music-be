@@ -41,12 +41,14 @@ async function AuthMiddleware(req, res, next) {
       res.status(200).send({
         success: false
       })
+      return
     } else {
       jwt.verify(token, KEY_JWT, (err, data) => {
         if (err) {
           res.status(200).send({
             success: false
           })
+          return
         } else {
           res.locals.data = data
           next()
@@ -57,6 +59,7 @@ async function AuthMiddleware(req, res, next) {
     res.status(200).send({
       success: false
     })
+    return
   }
 }
 
