@@ -182,8 +182,8 @@ class userController {
   }
 
   login = (req, res) => {
-    const { username, password } = req.body
-    const signJWT = JWTAuthToken(username)
+    const { username, password } = req.body[0]
+    const signJWT = JWTAuthToken([username])
     const successFunction = (message, data) => {
       res.status(200).send({
         success: true,
@@ -222,11 +222,12 @@ class userController {
   }
 
   refresh = async (req, res) => {
-    const username = res.locals.data[0]
+    const username = res.locals.data["0"]
     const data = await User.findOne({ username })
     if (data === null) {
       res.status(200).send({
-        success: false
+        success: false,
+        message: "Not found username"
       })
     } else
       res.status(200).send({
@@ -235,6 +236,39 @@ class userController {
         username,
         data
       })
+  }
+  changeProfile = async (req, res) => {
+    User.findOneAndUpdate(
+      { username: req.body.username },
+      { ...req.body },
+      { new: true }
+    )
+      .then((data) => {
+        res.status(200).send({
+          success: true,
+          data: data
+        })
+      })
+      .catch((err) => {
+        res.status(200).send({
+          success: false
+        })
+      })
+
+    // const username = res.locals.data["0"]
+    // const data = await User.findOne({ username })
+    // if (data === null) {
+    //   res.status(200).send({
+    //     success: false,
+    //     message: "Not found username"
+    //   })
+    // } else
+    //   res.status(200).send({
+    //     success: true,
+    //     message: "Refresh successfully",
+    //     username,
+    //     data
+    //   })
   }
 }
 

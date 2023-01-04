@@ -10,5 +10,6 @@ router.post("/sign-up", userController.signUp)
 router.post("/verify-otp", userController.verifyOTP)
 router.post("/sign-in", userController.login)
 router.get("/refresh", AuthMiddleware, userController.refresh)
+router.post("/change-profile", userController.changeProfile)
 
 module.exports = router

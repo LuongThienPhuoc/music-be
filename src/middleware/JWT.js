@@ -36,17 +36,18 @@ const respone_401 = (res, err) => {
 async function AuthMiddleware(req, res, next) {
   try {
     const token = req.cookies.jwt
-    // console.log("token", token)
     if (!token) {
       res.status(200).send({
-        success: false
+        success: false,
+        message: "Token not found"
       })
       return
     } else {
       jwt.verify(token, KEY_JWT, (err, data) => {
         if (err) {
           res.status(200).send({
-            success: false
+            success: false,
+            message: "Error when verify"
           })
           return
         } else {
@@ -57,7 +58,8 @@ async function AuthMiddleware(req, res, next) {
     }
   } catch (err) {
     res.status(200).send({
-      success: false
+      success: false,
+      message: "Error wtf"
     })
     return
   }
