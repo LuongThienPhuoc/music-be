@@ -8,7 +8,7 @@ var transporter = nodemailer.createTransport({
   }
 })
 
-const sendMail = (subject, content, receiver) => {
+const sendMailNode = (subject, content, receiver) => {
   var mailOptions = {
     from: "phiroudnodemailer@gmail.com",
     to: receiver,
@@ -24,4 +24,4 @@ const sendMail = (subject, content, receiver) => {
   })
 }
 
-module.exports = sendMail
+module.exports = sendMailNode

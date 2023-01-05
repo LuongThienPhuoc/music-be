@@ -6,6 +6,18 @@ const { JWTAuthToken } = require("../middleware/JWT")
 // const ZingMP3 = require("zingmp3-api")
 const { ZingMp3 } = require("zingmp3-api-full")
 const SALT_ROUND = 10
+const sendMailNode = require("../helper/sendMail")
+
+function makeCode(length) {
+  var result = ""
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  var charactersLength = characters.length
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+}
 
 class userController {
   test = async (req, res) => {
@@ -33,22 +45,23 @@ class userController {
     if (userExist) {
       let errorMessage = ""
       if (userExist.username === username) {
-        errorMessage = `Username: ${username} has been used, please choose another username`
+        errorMessage = `Tên đăng nhập: ${username} đã được sử dụng, vui lòng sử dụng tên khác`
       } else {
-        errorMessage = `Email ${email} has been used, please choose another email`
+        errorMessage = `Email ${email} đã được sử dụng, vui lòng sử dụng email khác`
       }
       res.status(200).send({ success: false, errorMessage: errorMessage })
       return
+    } else {
+      User.create({
+        username: username,
+        password: bcrypt.hashSync(password, SALT_ROUND),
+        email: email,
+        fullName: name
+      })
+      res
+        .status(200)
+        .send({ success: true, info: { username, email, name, password } })
     }
-    User.create({
-      username: username,
-      password: bcrypt.hashSync(password, SALT_ROUND),
-      email: email,
-      fullName: name
-    })
-    res
-      .status(200)
-      .send({ success: true, info: { username, email, name, password } })
   }
 
   requestOTP = (req, res) => {
@@ -59,6 +72,12 @@ class userController {
         message: "User not found"
       })
       return
+    }
+
+    const sendMail = (code) => {
+      if (checkValidEmail(email)) {
+        sendMailNode("P2Tunes Login Code", `Login Code was: ${code}`, email)
+      }
     }
 
     const isRequestingOTP = (trueFunction, falseFunction) => {
@@ -72,17 +91,23 @@ class userController {
     }
 
     const createTepmtUser = (email, nextFunction) => {
-      TemptUser.create({
-        email: email,
-        otp: 12345
-      })
-        .then((data) => {
-          // console.log("data", data)
-          nextFunction()
+      try {
+        const code = makeCode(6)
+        sendMail(code)
+        TemptUser.create({
+          email: email,
+          otp: code
         })
-        .catch((err) => {
-          errorFunction()
-        })
+          .then((data) => {
+            // console.log("data", data)
+            nextFunction()
+          })
+          .catch((err) => {
+            errorFunction()
+          })
+      } catch (e) {
+        errorFunction()
+      }
     }
 
     const findUser = (nextFunction) => {
@@ -98,12 +123,6 @@ class userController {
           // console.log("err", err)
           errorFunction()
         })
-    }
-
-    const sendMail = () => {
-      if (checkValidEmail(email)) {
-        sendMail("P2Tunes Login Code", "Login Code was: 123", email)
-      }
     }
 
     // Chain
@@ -237,6 +256,7 @@ class userController {
         data
       })
   }
+
   changeProfile = async (req, res) => {
     User.findOneAndUpdate(
       { username: req.body.username },
