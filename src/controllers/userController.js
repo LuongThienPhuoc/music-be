@@ -182,7 +182,7 @@ class userController {
   }
 
   login = (req, res) => {
-    const { username, password } = req.body[0]
+    const { username, password } = req.body
     const signJWT = JWTAuthToken([username])
     const successFunction = (message, data) => {
       res.status(200).send({
